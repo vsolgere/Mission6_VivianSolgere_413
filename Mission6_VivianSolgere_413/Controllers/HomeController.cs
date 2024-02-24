@@ -6,11 +6,12 @@ namespace Mission6_VivianSolgere_413.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly MovieCollectionContext _movieCollectionContext;
 
-        public HomeController(ILogger<HomeController> logger)
+        // Constructor with only the MovieCollectionContext dependency
+        public HomeController(MovieCollectionContext movieCollectionContext)
         {
-            _logger = logger;
+            _movieCollectionContext = movieCollectionContext;
         }
 
         public IActionResult Index()
@@ -23,6 +24,30 @@ namespace Mission6_VivianSolgere_413.Controllers
             return View();
         }
 
+        public IActionResult MovieCollection()
+        {
+            return View(new Movie());
+        }
+
+        [HttpPost]
+        public IActionResult AddMovie(Movie movie)
+        {
+            if (ModelState.IsValid)
+            {
+                _movieCollectionContext.Movies.Add(movie);
+                _movieCollectionContext.SaveChanges();
+
+                return RedirectToAction("ConfirmationPage");
+            }
+
+            return View("MovieCollection", movie);
+        }
+
+        public IActionResult ConfirmationPage()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -30,3 +55,4 @@ namespace Mission6_VivianSolgere_413.Controllers
         }
     }
 }
+

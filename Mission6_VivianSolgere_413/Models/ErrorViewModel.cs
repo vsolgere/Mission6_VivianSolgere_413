@@ -1,4 +1,4 @@
-namespace Mission6_VivianSolgere_413.Models
+﻿namespace Mission6_VivianSolgere_413.Models
 {
     public class ErrorViewModel
     {
