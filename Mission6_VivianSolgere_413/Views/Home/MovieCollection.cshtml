@@ -31,9 +31,12 @@
         </select>
     </div>
     
-    <div class="form-group form-check" style="margin-top: 15px;">
-        <input asp-for="Edited" class="form-check-input" />
-        <label asp-for="Edited" class="form-check-label"></label>
+    <div class="form-group">
+        <label asp-for="Edited">Edited:</label>
+        <select asp-for="Edited" class="form-control" required>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select>
     </div>
     
     <div class="form-group" style="margin-top: 15px;">

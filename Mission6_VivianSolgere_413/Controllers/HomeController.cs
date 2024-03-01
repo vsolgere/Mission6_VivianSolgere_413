@@ -6,7 +6,7 @@ namespace Mission6_VivianSolgere_413.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly MovieCollectionContext _movieCollectionContext;
+        private MovieCollectionContext _movieCollectionContext;
 
         // Constructor with only the MovieCollectionContext dependency
         public HomeController(MovieCollectionContext movieCollectionContext)
@@ -24,23 +24,19 @@ namespace Mission6_VivianSolgere_413.Controllers
             return View();
         }
 
+        [HttpGet]
         public IActionResult MovieCollection()
         {
-            return View(new Movie());
+            return View();
         }
 
         [HttpPost]
         public IActionResult AddMovie(Movie movie)
         {
-            if (ModelState.IsValid)
-            {
-                _movieCollectionContext.Movies.Add(movie);
-                _movieCollectionContext.SaveChanges();
+            _movieCollectionContext.Movies.Add(movie);
+            _movieCollectionContext.SaveChanges();
 
-                return RedirectToAction("ConfirmationPage");
-            }
-
-            return View("MovieCollection", movie);
+            return View("ConfirmationPage", movie);
         }
 
         public IActionResult ConfirmationPage()
