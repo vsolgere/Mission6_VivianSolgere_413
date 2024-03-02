@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Mission6_VivianSolgere_413.Models;
 using System.Diagnostics;
 
@@ -6,12 +8,12 @@ namespace Mission6_VivianSolgere_413.Controllers
 {
     public class HomeController : Controller
     {
-        private MovieCollectionContext _movieCollectionContext;
+        private MovieCollectionContext _context;
 
         // Constructor with only the MovieCollectionContext dependency
         public HomeController(MovieCollectionContext movieCollectionContext)
         {
-            _movieCollectionContext = movieCollectionContext;
+            _context = movieCollectionContext;
         }
 
         public IActionResult Index()
@@ -27,16 +29,28 @@ namespace Mission6_VivianSolgere_413.Controllers
         [HttpGet]
         public IActionResult MovieCollection()
         {
-            return View();
+
+            ViewBag.Categories = _context.Categories.ToList();
+            return View(new Movie());
         }
 
         [HttpPost]
         public IActionResult AddMovie(Movie movie)
         {
-            _movieCollectionContext.Movies.Add(movie);
-            _movieCollectionContext.SaveChanges();
+            if (ModelState.IsValid)
+            {
+                _context.Movies.Add(movie);
+                _context.SaveChanges();
 
-            return View("ConfirmationPage", movie);
+                return View("ConfirmationPage", movie);
+
+            }
+            else
+            {
+                ViewBag.Categories = _context.Categories.ToList();
+                return View("MovieCollection", movie);
+            }
+            
         }
 
         public IActionResult ConfirmationPage()
@@ -48,6 +62,49 @@ namespace Mission6_VivianSolgere_413.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+
+        public IActionResult MovieEntries()
+        {
+            //linq
+            var movies = _context.Movies
+                .Include(x => x.Category)
+                .OrderBy(x => x.Title)
+                .ToList();
+            return View(movies);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            Movie recordToEdit = _context.Movies
+                .Single(x => x.MovieId == id);
+
+            ViewBag.Categories = _context.Categories.ToList();
+
+            return View(recordToEdit);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Movie updatedInfo) {
+
+            _context.Movies.Update(updatedInfo);
+            _context.SaveChanges();
+
+            return RedirectToAction("MovieEntries");
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            var recordToDelete = _context.Movies.Single(m => m.MovieId == id);
+            if (recordToDelete != null)
+            {
+                _context.Movies.Remove(recordToDelete);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("MovieEntries");
         }
     }
 }

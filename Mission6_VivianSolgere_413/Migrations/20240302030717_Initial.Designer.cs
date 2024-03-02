@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Mission6_VivianSolgere_413.Models;
 
@@ -10,9 +11,10 @@ using Mission6_VivianSolgere_413.Models;
 namespace Mission6_VivianSolgere_413.Migrations
 {
     [DbContext(typeof(MovieCollectionContext))]
-    partial class MovieCollectionContextModelSnapshot : ModelSnapshot
+    [Migration("20240302030717_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
